@@ -1,0 +1,9 @@
+# `hidder `   
+Hidder è un tool di steganografia su file eseguibili, sia ELF che PE, sia 32 che 64 bit sull'architettura x86.  
+# `istallazione su UBUNTU 16.04+  `   
+Le librerie esterne necessarie per il funzionamento sono:
+```c
+// crypto library
+#include <openssl/evp.h>
+#include <openssl/sha.h>
+#include <openssl/aes.h>

@@ -46,10 +46,25 @@ a questo punto scarica questo repository e usa semplicemente
 > ./hidder "path_file_eseguibile" "path_file_output" "path_file_message"        
 
 Il primo parametro è il file eseguibile sul quale nascondere il messaggio, il secondo è il path di dove creare il file clone contenente il messaggio nascosto, infine un file contenente il messaggio da nascondere.
-> ./decoder "path_file_da_decodificare"     
+> ./decoder "path_file_da_decodificare" "path_output_file_message"
 
 inserire semplicemente il path del file eseguibile contenente il messaggio nascosto
 
 In entrambe le versioni viene chiesta una Password per criptare il messaggio.
 Verrànno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
+
+# `Credits`
+
+## `Capstone`
+https://github.com/aquynh/capstone , CAPSTONE, ultimo accesso 19/08/2020
+
+## `Keystone`
+https://github.com/keystone-engine/keystone , KEYSTONE, ultimo accesso 19/08/2020
+
+## `Hydan`
+El-Khalil, R.: Hydan: Hiding Information in Program Binaries (2003). 
+http://crazyboy.com/hydan/
+
+### `ELF parser`
+https://github.com/TheCodeArtist/elf-parser
 

@@ -14,7 +14,7 @@ Le librerie esterne necessarie per il funzionamento sono:
 // formato elf
 #include <elf.h>
 ```
-openssl/elf sono al 99% gia presenti, basta aver fatto almeno una volta
+openssl/elf sono al 99% gia presenti, altrimenti esegui da prompt
 >sudo apt-get update && sudo apt-get upgrade    
 
 installare cmake
@@ -23,13 +23,16 @@ installare cmake
 capstone è reperibile a questo link github https://github.com/aquynh/capstone, si deve
 scaricare il repository oppure scaricare lo zip e decomprimerlo, nel primo caso
 ```sh
-git clone https://github.com/aquynh/capstone.git 
+git clone https://github.com/aquynh/capstone.git
+cd capstone
+sudo ./make.sh
 sudo ./make.sh install 
 ```
 ### `keystone   `
 come per capstone 
 ```sh
 git clone https://github.com/keystone-engine/keystone.git 
+cd keystone
 mkdir build
 cd build
 ../make-share.sh

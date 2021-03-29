@@ -438,12 +438,11 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
         decrypt( hdr_data->cyphertext, hdr_data->cyphertext_len, hdr_data->digest, hdr_data->ivec, hdr_data->plaintext);
         hdr_data->plaintext[hdr_data->plaintext_len]='\0';
 
-        write_log("Messaggio decifrato salvato nel file\n");
         int dim=0;
         do{
             dim += fwrite(hdr_data->plaintext, 1, hdr_data->plaintext_len, hdr_data->f_output);
-            
         }while( dim != hdr_data->plaintext_len );
+        write_log("Messaggio decifrato salvato nel file\n");
 
 		cs_free(insn, count);
 	

@@ -206,6 +206,11 @@ struct hdr_register registri;
 int *lab;
 int cont_label;
 
+/*
+    Opzioni passate da riga di comando al programma
+*/
+extern int e_opt_dec; // opzione -e per decoder (e sta per esegui)
+
 // ====================================================================
 // ===============FUNCTION=============================================
 

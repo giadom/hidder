@@ -4,13 +4,51 @@
 
 int decoder_main(int argc, char *argv[])
 {
-    if(argc != 3){
-        write_log("Formato errato prova:\n./hidder [path file da decodificare] [path file output]\n");
-        exit(1);
-    }
     // variabili multi uso per return cicli e temporanei
     int i,j,ret;
     unsigned char temp;
+    
+    // Anche se i file li usero` dopo, li incomincio ad aprire visto che devo agire sulle eventuali opzioni
+    FILE *f_output = NULL;
+    FILE *f_input = NULL;
+    int e_opt_dec=0;
+    if(argc!=3 && argc != 4)
+    {
+        write_log("Formato errato prova:\n./decoder [path file da decodificare] [path file output]\n");
+        exit(1);
+    }
+    else
+    {
+        /*
+            Usufruisco di getopt (definito in unistd.h) per estrapolare le opzioni. unistd.h e` gia` importato in hidder.h.
+            https://www.gnu.org/software/libc/manual/html_node/Using-Getopt.html#Using-Getopt
+        */
+        opterr=0; // Non voglio usufruire del messaggio di errore predefinito di getopt
+        while( -1 != (ret=getopt(argc,argv,"e")) )
+        {
+            switch(ret)
+            {
+                case 'e':
+                    e_opt_dec=1;
+                    break;
+                default:
+                    break;
+            }
+        }
+        // optind e` l'indice della prima non-opzione. getopt riarrangia argv mettendo in fondo le non-opzioni
+        // printf("optind:%d\nf_input:%s\nf_output:%s\n",optind,argv[optind],argv[optind+1]);
+        if(0 == e_opt_dec)
+        {
+            f_input = fopen( argv[1] ,"rb+");
+            f_output = fopen( argv[2] ,"wb");
+        }
+        else
+        {
+            f_input = fopen( argv[optind] ,"rb+");
+            f_output = fopen( argv[optind+1] ,"wb");
+        }
+    }
+    
 
     /*
         inizializzo struttura base
@@ -39,8 +77,6 @@ int decoder_main(int argc, char *argv[])
         hdr_data->crypted_plaintext_len[i]=0;
     }
     
-    FILE *f_output = NULL;
-    f_output = fopen( argv[2] ,"wb");
     if( (f_output == NULL) )
     {
         write_log("Error on opening input %s\n",strerror(errno));
@@ -51,11 +87,9 @@ int decoder_main(int argc, char *argv[])
      *  Apriamo il file eseguibile e determiniamo l'architettura
      *  Creo il file di output o se gia esiste lo "resetto"
     */
-    FILE *f_input = NULL;
     
     // x86  /home/osboxes/Desktop/ctf/binary-exploitation-intro-master/home/4.spiderpork/spiderpork
     // x64  /home/osboxes/Desktop/ctf/binary-exploitation-intro-master/home/2. hi/hi
-    f_input = fopen( argv[1] ,"rb+");
     if( (f_input == NULL) )
     {
         write_log("Error on opening input %s\n",strerror(errno));

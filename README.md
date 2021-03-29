@@ -1,6 +1,6 @@
 # `hidder`   
 Hidder è un tool di steganografia su file eseguibili, sia ELF che PE, sia 32 che 64 bit sull'architettura x86.  
-# `Istallazione su GNU/Linux`   
+# `Installazione su GNU/Linux`   
 Le librerie esterne necessarie per il funzionamento sono:
 ```c
 // crypto library
@@ -56,18 +56,18 @@ inserire semplicemente il path del file eseguibile contenente il messaggio nasco
 In entrambe le versioni viene chiesta una Password per criptare il messaggio.
 Verranno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
 
-# `Credits`
+##### `Credits`
 
-## `Capstone`
+###### `Capstone`
 https://github.com/aquynh/capstone , CAPSTONE, ultimo accesso 19/08/2020
 
-## `Keystone`
+###### `Keystone`
 https://github.com/keystone-engine/keystone , KEYSTONE, ultimo accesso 19/08/2020
 
-## `Hydan`
+###### `Hydan`
 El-Khalil, R.: Hydan: Hiding Information in Program Binaries (2003). 
 http://crazyboy.com/hydan/
 
-### `ELF parser`
+###### `ELF parser`
 https://github.com/TheCodeArtist/elf-parser
 

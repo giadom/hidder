@@ -1,6 +1,6 @@
-# `hidder `   
+# `hidder`   
 Hidder è un tool di steganografia su file eseguibili, sia ELF che PE, sia 32 che 64 bit sull'architettura x86.  
-# `istallazione su UBUNTU 16.04+  `   
+# `Istallazione su GNU/Linux`   
 Le librerie esterne necessarie per il funzionamento sono:
 ```c
 // crypto library
@@ -14,12 +14,12 @@ Le librerie esterne necessarie per il funzionamento sono:
 // formato elf
 #include <elf.h>
 ```
-openssl/elf sono al 99% gia presenti, altrimenti esegui da prompt
->sudo apt-get update && sudo apt-get upgrade    
+openssl/elf sono spesso già presenti sul sistema operativo. openssl la puoi installare cercando:
+>libssl-dev
 
 installare cmake
 >sudo apt-get install cmake
-### `capstone  `  
+### `capstone`
 capstone è reperibile a questo link github https://github.com/aquynh/capstone, si deve
 scaricare il repository oppure scaricare lo zip e decomprimerlo, nel primo caso
 ```sh
@@ -28,7 +28,7 @@ cd capstone
 sudo ./make.sh
 sudo ./make.sh install 
 ```
-### `keystone   `
+### `keystone`
 come per capstone 
 ```sh
 git clone https://github.com/keystone-engine/keystone.git 
@@ -39,13 +39,13 @@ cd build
 sudo make install
 sudo ldconfig
 ```
-### `hidder  `
+### `hidder`
 a questo punto scarica questo repository e usa semplicemente 
 >make -i
 
 ---
 ---
-# `USO`
+# `Uso`
 > ./hidder "path_file_eseguibile" "path_file_output" "path_file_message"        
 
 Il primo parametro è il file eseguibile sul quale nascondere il messaggio, il secondo è il path di dove creare il file clone contenente il messaggio nascosto, infine un file contenente il messaggio da nascondere.
@@ -54,7 +54,7 @@ Il primo parametro è il file eseguibile sul quale nascondere il messaggio, il s
 inserire semplicemente il path del file eseguibile contenente il messaggio nascosto
 
 In entrambe le versioni viene chiesta una Password per criptare il messaggio.
-Verrànno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
+Verranno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
 
 # `Credits`
 

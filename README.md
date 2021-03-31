@@ -40,13 +40,13 @@ sudo make install
 sudo ldconfig
 ```
 ### `hidder`
-a questo punto scarica questo repository e usa semplicemente 
+A questo punto scarica questo repository come fatto con kesystone e capstone e usa semplicemente:
 >make -i
 
 ---
 ---
 # `Uso`
-Per nascondere il messaggio in "pat_file_message" all'interno del file eseguibile "path_file_eseguibile" producendo il file  "path_file_output" digita:
+Per nascondere il messaggio in "path_file_message" all'interno del file eseguibile "path_file_eseguibile" producendo il file  "path_file_output" digita:
 > ./hidder "path_file_eseguibile" "path_file_output" "path_file_message"
 
 Per estrapolare il messaggio contenuto in "path_file_da_decodificare" e metterlo in "path_output_file_message", digita:

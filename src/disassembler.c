@@ -1,7 +1,5 @@
 // header libreria
 #include "hidder.h"
-#include <string.h>         // Serve per memcpy
-#include <sys/mman.h>       // Serve per mmap
   
 int binarySearch(int arr[], int low, int high, int key)
 {

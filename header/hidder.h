@@ -17,6 +17,8 @@
 #include <unistd.h>
 #include <signal.h>
 #include <arpa/inet.h>
+#include <string.h>         // Serve per memcpy di decoder_disasm in disassembler.c
+#include <sys/mman.h>       // Serve per mmap di decoder_disasm in disassembler.c
 
 #include "hdr_pe.h"
 /*

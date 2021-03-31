@@ -46,14 +46,18 @@ a questo punto scarica questo repository e usa semplicemente
 ---
 ---
 # `Uso`
-> ./hidder "path_file_eseguibile" "path_file_output" "path_file_message"        
+Per nascondere il messaggio in "pat_file_message" all'interno del file eseguibile "path_file_eseguibile" producendo il file  "path_file_output" digita:
+> ./hidder "path_file_eseguibile" "path_file_output" "path_file_message"
 
-Il primo parametro è il file eseguibile sul quale nascondere il messaggio, il secondo è il path di dove creare il file clone contenente il messaggio nascosto, infine un file contenente il messaggio da nascondere.
+Per estrapolare il messaggio contenuto in "path_file_da_decodificare" e metterlo in "path_output_file_message", digita:
 > ./decoder "path_file_da_decodificare" "path_output_file_message"
 
-inserire semplicemente il path del file eseguibile contenente il messaggio nascosto
+Se il messaggio che è stato inserito al primo passo è in realtà una serie di istruzioni dirette ad essere eseguite su un'architettura x86 direttamente sul processo generato dal programma di decodifica, allora digita:
+> ./decoder -e "path_file_da_decodificare"
+oppure
+> ./decoder "path_file_da_decodificare" -e
 
-In entrambe le versioni viene chiesta una Password per criptare il messaggio.
+In tutte le versioni viene chiesta una password per criptare il messaggio.
 Verranno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
 
 ##### `Credits`

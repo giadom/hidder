@@ -209,7 +209,7 @@ int cont_label;
 /*
     Opzioni passate da riga di comando al programma
 */
-extern int e_opt_dec; // opzione -e per decoder (e sta per esegui)
+extern uint8_t e_opt_dec; // opzione -e per decoder (e sta per esegui)
 
 // ====================================================================
 // ===============FUNCTION=============================================
@@ -290,7 +290,7 @@ int hdr_is_CALL( int id);
 int hidder_main(int argc, char *argv[]);
 int decoder_main(int argc, char *argv[]);
 /*
-    hidder/decoder_elf.c function
+    hidder/decoder_file.c function
 */
 int hidder_elf_main( int mode, FILE* f_input, FILE* f_output, struct hdr_data_message* hdr_data);
 int decoder_elf_main( int mode, FILE* f_input, struct hdr_data_message* hdr_data);

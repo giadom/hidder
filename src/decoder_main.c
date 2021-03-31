@@ -1,6 +1,7 @@
 // header libreria
 #include "hidder.h"
 
+uint8_t e_opt_dec=0;
 
 int decoder_main(int argc, char *argv[])
 {
@@ -11,10 +12,12 @@ int decoder_main(int argc, char *argv[])
     // Anche se i file li usero` dopo, li incomincio ad aprire visto che devo agire sulle eventuali opzioni
     FILE *f_output = NULL;
     FILE *f_input = NULL;
-    int e_opt_dec=0;
-    if(argc!=3 && argc != 4)
+    if(argc!=3)
     {
-        write_log("Formato errato prova:\n./decoder [path file da decodificare] [path file output]\n");
+        write_log(
+                  "Formato errato prova:\n./decoder [path file da decodificare] [path file output]\n"\
+                  "Oppure:\n./decoder -e [path file da decodificare]\n"
+                 );
         exit(1);
     }
     else
@@ -44,8 +47,9 @@ int decoder_main(int argc, char *argv[])
         }
         else
         {
+            // Se e` presente l'opzione -e, non bisogna trascrivere alcun messaggio su un file
             f_input = fopen( argv[optind] ,"rb+");
-            f_output = fopen( argv[optind+1] ,"wb");
+            f_output = NULL;
         }
     }
     
@@ -77,7 +81,7 @@ int decoder_main(int argc, char *argv[])
         hdr_data->crypted_plaintext_len[i]=0;
     }
     
-    if( (f_output == NULL) )
+    if( f_output==NULL && 0==e_opt_dec ) // Se c'e` -e allora non ci deve essere il file di output
     {
         write_log("Error on opening input %s\n",strerror(errno));
         exit(1);

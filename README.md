@@ -78,4 +78,5 @@ http://crazyboy.com/hydan/
 https://github.com/TheCodeArtist/elf-parser
 La repository appena citata fa largo uso della macro assert in contesti del genere:
 >assert(read(fd, (void *)buff, sh.sh_size) == sh.sh_size);
+
 quindi se disabiliti la macro assert sperando di velocizzare l'esecuzione del programma hidder, non funzionerà più niente.

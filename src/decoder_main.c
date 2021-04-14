@@ -1,7 +1,7 @@
 // header libreria
 #include "hidder.h"
 
-uint8_t e_opt_dec=0;
+_Bool e_opt_dec=0;
 
 int decoder_main(int argc, char *argv[])
 {
@@ -47,9 +47,9 @@ int decoder_main(int argc, char *argv[])
         }
         else
         {
-            // Se e` presente l'opzione -e, non bisogna trascrivere alcun messaggio su un file
+            // Se e` presente l'opzione -e, non bisogna trascrivere alcun messaggio su un file ed f_output
+            // rimane a NULL.
             f_input = fopen( argv[optind] ,"rb+");
-            f_output = NULL;
         }
     }
     
@@ -87,11 +87,8 @@ int decoder_main(int argc, char *argv[])
         exit(1);
     }
     hdr_data->f_output=f_output;
-    /*
-     *  Apriamo il file eseguibile e determiniamo l'architettura
-     *  Creo il file di output o se gia esiste lo "resetto"
-    */
     
+    // Determiniamo l'architettura
     // x86  /home/osboxes/Desktop/ctf/binary-exploitation-intro-master/home/4.spiderpork/spiderpork
     // x64  /home/osboxes/Desktop/ctf/binary-exploitation-intro-master/home/2. hi/hi
     if( (f_input == NULL) )

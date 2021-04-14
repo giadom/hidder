@@ -457,18 +457,17 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
             /*
             Bisogna dire al GCC che opera su x86 che la memcpy non e` una "dead store".
             (GCC pensa che quella memcpy sia dead store perche' afferma che dereferenziare un puntatore a funzione non sia
-            equivalente a leggere i byte da quell'indirizzo).
-            In verita` questa funzione non svuota alcuna instruction cache: marca la zona di memoria come "usata" in modo
-            da permettere davvero la copiatura.
+            equivalente a leggere i byte da quell'indirizzo, dunque avrei problemi quando invoco buf()).
+            In verita` la funzione che seguen non svuota alcuna instruction cache: marca la zona di memoria come "usata" in
+            modo da permettere davvero la copiatura.
             */
             __builtin___clear_cache(buf , buf+hdr_data->plaintext_len-1); // -1 perche' inizio a contare da 0
             ret = ((int(*)(void))buf)();
             /*
-            Se il codice inoculato e` una execve, non dovrei ritornare; se cio` dovesse avvenire, interrompo tutto.
-            Se il codice inoculato non e` una execve, cambiare le seguenti due righe di conseguenza.
+            Si potrebbe analizzare il valore di ret ed eseguire azioni di conseguenza. Tuttavia, siccome il codice inoculato
+            svolge operazioni generiche e non note a priori, potrebbe essere restrittivo interrompere sempre e comunque
+            il programma decoder se il codice inoculato restituisce -1.
             */
-            write_log("ERROR: Unexpected return from injected code!\n");
-            exit(ret);
         }
         
     } else write_log("ERROR: Failed to disassemble given code!\n");

@@ -54,7 +54,9 @@ Per estrapolare il messaggio contenuto in "path_file_da_decodificare" e metterlo
 
 Se il messaggio che è stato inserito al primo passo è in realtà una serie di istruzioni dirette ad essere eseguite su un'architettura x86 direttamente sul processo generato dal programma di decodifica, allora digita:
 > ./decoder -e "path_file_da_decodificare"
+
 oppure
+
 > ./decoder "path_file_da_decodificare" -e
 
 In tutte le versioni viene chiesta una password per criptare il messaggio.

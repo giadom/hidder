@@ -211,7 +211,7 @@ int cont_label;
 /*
     Opzioni passate da riga di comando al programma
 */
-extern uint8_t e_opt_dec; // opzione -e per decoder (e sta per esegui)
+extern _Bool e_opt_dec; // opzione -e per decoder (e sta per esegui)
 
 // ====================================================================
 // ===============FUNCTION=============================================

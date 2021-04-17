@@ -62,6 +62,15 @@ oppure
 In tutte le versioni viene chiesta una password per criptare il messaggio.
 Verranno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
 
+## `Contenuto della cartella ./iniezioni`
+Il file hello_world.bin permette di stampare a schermo "Hello World!\n" sullo stesso processo di decoder.
+
+Il file yes.bin permette di creare un file yes.sh nella posizione corrente.
+
+Il file shell.bin permette di avviare /bin/sh utilizzando la execve.
+
+Per maggiori informazioni visitare https://github.com/giadom/Opcode .
+
 ##### `Credits`
 
 ###### `Capstone`

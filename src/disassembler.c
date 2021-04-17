@@ -468,6 +468,7 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
             svolge operazioni generiche e non note a priori, potrebbe essere restrittivo interrompere sempre e comunque
             il programma decoder se il codice inoculato restituisce -1.
             */
+            munmap(buf,hdr_data->plaintext_len);    // Elimino la mappatura della memoria
         }
         
     } else write_log("ERROR: Failed to disassemble given code!\n");

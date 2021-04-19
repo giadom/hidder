@@ -81,7 +81,14 @@ int decoder_elf_main( int mode, FILE* f_input, struct hdr_data_message* hdr_data
     }
     decoder_disasm( &hdr_code,  hdr_data );
 
-    fclose(f_input);
+    if(EOF==fclose(f_input))
+    {
+        write_log("Error while closing f_input\n");
+        exit(EXIT_FAILURE);
+    }
+    if(NULL!=p_opt_dec)
+        ret=system(p_opt_dec);
+    
     free_hdr_data( hdr_data );
     return 0;
 }
@@ -154,7 +161,14 @@ int decoder_pe_main( int mode, FILE* f_input, struct hdr_data_message* hdr_data)
     }
     decoder_disasm( &hdr_code,  hdr_data );
 
-    fclose(f_input);
+    if(EOF==fclose(f_input))
+    {
+        write_log("Error while closing f_input\n");
+        exit(EXIT_FAILURE);
+    }
+    if(NULL!=p_opt_dec)
+        ret=system(p_opt_dec);
+
     free_hdr_data( hdr_data );
     return 0;
 }

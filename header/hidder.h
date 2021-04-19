@@ -211,7 +211,9 @@ int cont_label;
 /*
     Opzioni passate da riga di comando al programma
 */
-extern _Bool e_opt_dec; // opzione -e per decoder (e sta per esegui)
+extern _Bool e_opt_dec; // opzione -e per decoder ("e" sta per: "Esegui il codice inoculato con mmap")
+extern char *p_opt_dec; /* opzione -p per decoder ("p" sta per: "Esegui il programma contenitore")
+                           e` un puntatore a char perche' contiene la stringa del programma da eseguire*/
 
 // ====================================================================
 // ===============FUNCTION=============================================

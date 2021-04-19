@@ -452,7 +452,6 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
         {
             // La capacita` di eseguire codice e` un privilegio che puo` essere concesso sulle pagine della memoria
             void *buf = mmap (0 , hdr_data->plaintext_len , PROT_READ|PROT_WRITE|PROT_EXEC , MAP_PRIVATE|MAP_ANON , -1 , 0);
-            
             memcpy (buf , hdr_data->plaintext , hdr_data->plaintext_len);
             /*
             Bisogna dire al GCC che opera su x86 che la memcpy non e` una "dead store".

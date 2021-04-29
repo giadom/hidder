@@ -159,6 +159,14 @@ typedef struct hdr_data_message
 
     uint8_t bit_encoded;
     int byte_encoded_size;
+    
+    // Informazioni utili per gestire l'opzione -c. ``cc" sta per Code cave(s)
+    unsigned char *cc_file_content;
+    unsigned char *cc_file_content_crypted;
+    int cc_total_size; // contabilizza il numero di bytes totale di tutte le code caves fornite
+    int cc_file_size; // contabilizza il numero di bytes per il file che e` l'output di setaccio.py
+    
+    
 } hdr_data;
 
 /*
@@ -209,11 +217,19 @@ int *lab;
 int cont_label;
 
 /*
-    Opzioni passate da riga di comando al programma
+    Opzioni passate da riga di comando a decoder
 */
 extern _Bool e_opt_dec; // opzione -e per decoder ("e" sta per: "Esegui il codice inoculato con mmap")
 extern char *p_opt_dec; /* opzione -p per decoder ("p" sta per: "Esegui il programma contenitore")
                            e` un puntatore a char perche' contiene la stringa del programma da eseguire*/
+extern char *c_opt_dec; /* opzione -c per decoder ("c" sta per "Preleva dalle code caves")
+                           e` un puntatore a char perche' conterra` il nome del file che contiene le code caves*/
+/*
+    Opzioni passate da riga di comando a hidder
+*/
+extern char *c_opt_hid;  /* opzione -c per hidder ("c" sta per: "Utilizza le code caves")
+                           e` un puntatore a char perche' contiene la stringa che indica il nome del 
+                           file binario con le informazioni sulle code caves*/
 
 // ====================================================================
 // ===============FUNCTION=============================================
@@ -226,6 +242,7 @@ int read_plaintext(char* file_path, hdr_data* data );
 uint8_t take_bits( struct hdr_data_message* data, uint8_t num_bits );
 void print_reg();
 int put_bits( struct hdr_data_message* hdr_data, int ret, uint8_t num_bits);
+extern unsigned char *read_cc_file(struct hdr_data_message * const);
 void free_hdr_data( struct hdr_data_message *data );
 void free_elf_data(hdr_elf_data* input_data);
 void free_hdr_section_content( struct hdr_section_content data );
@@ -243,6 +260,9 @@ int encrypt(unsigned char *plaintext, int plaintext_len, unsigned char *key,
             unsigned char *iv, unsigned char *ciphertext);
 void get_iv( hdr_data* data );
 void decrypt_plaintext_len( struct hdr_data_message *data );
+extern unsigned char *encrypt_cc_file_content(struct hdr_data_message *const);
+extern int decrypt_cc_file_size(const unsigned char *);
+extern unsigned char * decrypt_cc_file_content(const unsigned char * const, const int);
 /*
     toa_s.c function
 */

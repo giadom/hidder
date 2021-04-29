@@ -122,6 +122,7 @@ int hidder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_message
     int i,j,ret,c;
     unsigned char temp;
     unsigned long reg_flag_temp;
+    
     // inizializzo capstone
 	csh handle;
 	cs_insn *insn;
@@ -150,8 +151,9 @@ int hidder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_message
         
 		for (j = 0; j < count; j++) {
             
-            // controllo se ho finito di decodificare.
-            if( hdr_data->byte_encoded_size == (hdr_data->cyphertext_len+INT_BYTES_LEN) ){
+            // controllo se ho finito di decodificare. Se e` stata fornita l'opzione -c, allora devo considerare quei
+            // byte per cc_file_size.
+            if( hdr_data->byte_encoded_size == (hdr_data->cyphertext_len+INT_BYTES_LEN+hdr_data->cc_file_size) ){
                 write_log("Nascosti tutti e %d bytes\n\n", hdr_data->cyphertext_len );
                 break;
             }
@@ -353,8 +355,9 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
 
 		for (j = 0; j < count; j++) {
             
-            // controllo se ho finito di decodificare.
-            if( hdr_data->byte_encoded_size == (hdr_data->cyphertext_len+INT_BYTES_LEN) ){
+            // controllo se ho finito di decodificare. Se e` stata fornita l'opzione -c, allora devo considerare
+            // quei byte per cc_file_size.
+            if( hdr_data->byte_encoded_size == (hdr_data->cyphertext_len+INT_BYTES_LEN +hdr_data->cc_file_size) ){
                 write_log("Rilevati %d bytes\n", hdr_data->cyphertext_len );
                 break;
             }

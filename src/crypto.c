@@ -250,4 +250,60 @@ int decrypt_cyphertext( hdr_data* data ){
     write_log( "%s\n", outdata);
 }
 
+/*
+Vorrei riusare la stessa tecnica crittografica utilizzata per plaintext_len
+*/
+unsigned char *
+encrypt_cc_file_content(hdr_data *const data)
+{
+    int n_elementi;
+    memcpy(&n_elementi , (*data).cc_file_content , INT_BYTES_LEN); // Metto in n_elementi il numero di elementi nella lista delle cc
+    n_elementi= n_elementi+1; // Conteggio anche il primo intero: quello che indica il numero di elementi nella lista delle cc
+    unsigned char *const cc_file_content_crypted=(unsigned char *)malloc(INT_BYTES_LEN*n_elementi);
+    if(NULL == cc_file_content_crypted)
+    {
+        write_log("Error: malloc failed for code caves file content crypted\n");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(cc_file_content_crypted , (*data).cc_file_content , INT_BYTES_LEN*n_elementi);
+    /* Quando verra` aggiustata la funzione crittografica, decommentare
+    for(int i=0 ; i<n_elementi ; i++)
+    {
+        encrypt_plaintext_len( (*data).plaintext_len , (*data).digest , (*data).ivec , &cc_file_content_crypted[i*INT_BYTES_LEN] );
+    }
+    */
+    return cc_file_content_crypted;
+}
 
+/* Dovrei decifrare la lunghezza di cc_file_size */
+int
+decrypt_cc_file_size(const unsigned char cc_file_size_crypted[])
+{
+    // Decifrare cc_file_crypted, o, in alternativa, lasciare cosi`
+
+    int cc_file_size;
+    memcpy(&cc_file_size , cc_file_size_crypted , INT_BYTES_LEN);
+    /* +1 perche' cosi` conteggio anche il numero iniziale che indica il numero di elementi nella lista:
+       inizio_cc1,byte_cc1,inizio_cc2,byte_cc2,...
+    */
+    cc_file_size=(cc_file_size+1) * INT_BYTES_LEN;
+    
+    return cc_file_size;
+}
+
+/* Vorrei decifrare in maniera opposta a encrypt_cc_file_content */
+unsigned char *
+decrypt_cc_file_content(const unsigned char * const cc_file_content_crypted , const int cc_file_size)
+{
+    unsigned char * const cc_file_content=(unsigned char *)malloc(cc_file_size * sizeof(unsigned char));
+    if(NULL == cc_file_content)
+    {
+        write_log("malloc cc_file_content failed in ``decrypt_cc_file_content\"\n");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(cc_file_content , cc_file_content_crypted , cc_file_size);
+    
+    // Decifrare cc_file_content
+    
+    return cc_file_content;
+}

@@ -1,6 +1,39 @@
 // includiamo tutte le specifiche 
 #include "hidder.h"
 
+/*
+Funzione d'utilita`, privata al file, che inserisce i dati cifrati nelle code caves.
+*/
+static void
+insert_into_cc( FILE *f_output , const unsigned char *const cyphertext , const unsigned char *const cc_file_content )
+{
+    int LEN; // Numero di elementi nella lista: inizio_cc1,byte_cc1,inizio_cc2,byte_cc2,...
+    memcpy(&LEN , cc_file_content , INT_BYTES_LEN);
+    int inizio; // Indirizzo d'inizio di una code cave
+    int quanti; // Quanti byte inserire nella code cave
+    int j=0;      // Variabile utilizzata per indicizzare cyphertext
+    for(int i=1 ; i<LEN ; i+=2)
+    {
+        // Mi posiziono all'inizio dei byte che indicano la posizione d'inizio della cc
+        memcpy(&inizio , cc_file_content+(i*INT_BYTES_LEN) , INT_BYTES_LEN);
+        // Mi posiziono all'inizio dei byte che indicano la lunghezza (in byte) della cc
+        memcpy(&quanti , cc_file_content+((i+1)*INT_BYTES_LEN) , INT_BYTES_LEN);
+        if( fseek(f_output, inizio , SEEK_SET) != 0)
+        {
+            write_log("fseek error in ``insert_into_cc\" function\n");
+            exit(EXIT_FAILURE);
+        }
+        if(quanti != fwrite(&cyphertext[j] , sizeof(unsigned char) , quanti , f_output) )
+        {
+            write_log("fwrite error in ``insert_into_cc\" function\n");
+            exit(EXIT_FAILURE);
+        }
+        write_log("Nella code cave che inizia all'indirizzo %d, sono stati trascritti %d byte di messaggio cifrato\n",inizio,quanti);
+        j+=quanti;
+    }
+    write_log("\n");
+}
+
 int hidder_elf_main( int mode, FILE* f_input,FILE* f_output, struct hdr_data_message* hdr_data){
     // variabili multi uso per return cicli e temporanei
     int i,j,ret;
@@ -93,7 +126,7 @@ int hidder_elf_main( int mode, FILE* f_input,FILE* f_output, struct hdr_data_mes
     
     disasm( hdr_code.CODE, hdr_code.section_size );
     hidder_disasm( &hdr_code, hdr_data );
-
+    
     if( hdr_data->byte_encoded_size < hdr_data->cyphertext_len ){
         write_log("Encoded %d/%d bytes rate %d, cambia file oppure riduci il messaggio\n", 
                     hdr_data->byte_encoded_size, hdr_data->cyphertext_len, (cont_istr.size/hdr_data->byte_encoded_size)  );
@@ -136,6 +169,11 @@ int hidder_elf_main( int mode, FILE* f_input,FILE* f_output, struct hdr_data_mes
         }while( true );
     }
 
+    // Forse e` un po' inefficiente scrivere nelle code caves dopo aver riscritto tutto il file di output,
+    // tuttavia in questo modo evito di effettuare controlli nelle righe di codice precedenti.
+    if(NULL != c_opt_hid)
+        insert_into_cc( f_output , (*hdr_data).cyphertext , (*hdr_data).cc_file_content );
+    
     free_hdr_section_content( hdr_code );
     free_elf_data( input_data );
     return 0;

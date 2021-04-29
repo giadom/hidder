@@ -2,6 +2,8 @@
 // header libreria 
 #include "hidder.h"
 
+char *c_opt_hid=NULL;
+
 void init_logs_var(){
     cont_istr.add_s=0;
     cont_istr.sub=0;
@@ -83,15 +85,41 @@ int hidder_main(int argc, char *argv[])
 {   
     init_logs_var();
 
-    if(argc != 4){
-        write_log("Formato errato prova:\n./hidder [path file eseguibile] [file output] [file messaggio]\n");
+    if(argc != 4 && argc != 6)
+    {
+formato_errato:
+        write_log("Formato errato prova:\n./hidder [-c output_setaccio.bin] path_file_eseguibile file_output file_messaggio\n");
         exit(1);
     }
     
     // variabili multi uso per return cicli e temporanei
     int i,j,ret;
     unsigned char temp;
-
+    
+    if(6==argc)
+    {
+        /*
+            Usufruisco di getopt (definito in unistd.h) per estrapolare le opzioni. unistd.h e` gia` importato in hidder.h.
+            https://www.gnu.org/software/libc/manual/html_node/Using-Getopt.html#Using-Getopt
+        */
+        opterr=0; // Non voglio usufruire del messaggio di errore predefinito di getopt
+        while( -1 != (ret=getopt(argc,argv,"c:")) )
+        {
+            switch(ret)
+            {
+                case 'c':
+                    c_opt_hid=optarg; // Ci metto il nome del file passato come argomento a -c
+                    break;
+                default:
+                    write_log("Unexpected error while parsing arguments\n");
+                    exit(EXIT_FAILURE);
+                    break;
+            }
+        }
+        if(NULL==c_opt_hid)
+            goto formato_errato;
+    }
+    
     /*
     *    inizializzo struttura base
     */
@@ -113,7 +141,7 @@ int hidder_main(int argc, char *argv[])
     /*
     *   leggo il plaintext e lo cripto
     */
-    if( !( read_plaintext( argv[3], hdr_data) ) ){
+    if( !( read_plaintext( argv[argc-1], hdr_data) ) ){
         write_log("Error read_plaintext\n");
         exit(1);
     } 
@@ -121,6 +149,21 @@ int hidder_main(int argc, char *argv[])
     encrypt_plaintext( hdr_data );
     hdr_data->bit_encoded=0;
     hdr_data->byte_encoded_size=0;
+    if(NULL != c_opt_hid)
+    {
+        // Leggo il contenuto del file che contiene le istruzioni per le cc
+        (*hdr_data).cc_file_content=read_cc_file(hdr_data);
+        // Cifro la stringa cc_file_content
+        (*hdr_data).cc_file_content_crypted=encrypt_cc_file_content(hdr_data);
+    }
+    else
+    {
+        // Valori di default per le informazioni che gestiscono le code caves
+        (*hdr_data).cc_file_content=NULL;
+        (*hdr_data).cc_file_content_crypted=NULL;
+        (*hdr_data).cc_file_size=0;
+        (*hdr_data).cc_total_size=0;
+    }
     free(hdr_data->plaintext);
 
 
@@ -131,8 +174,8 @@ int hidder_main(int argc, char *argv[])
     FILE *f_input = NULL;
     FILE *f_output = NULL;
 
-    f_output = fopen( argv[2] ,"wb");
-    f_input = fopen( argv[1] ,"rb+");
+    f_output = fopen( argv[argc-2] ,"w+b"); // Imposto ``+" per permettere fseek quando scrivo nelle code caves
+    f_input = fopen( argv[argc-3] ,"rb+");
     
     if( (f_input == NULL) || (f_output == NULL))
     {

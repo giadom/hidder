@@ -3,6 +3,7 @@
 
 _Bool e_opt_dec=0;
 char *p_opt_dec=NULL;
+char *c_opt_dec=NULL;
 
 int decoder_main(int argc, char *argv[])
 {
@@ -17,7 +18,7 @@ int decoder_main(int argc, char *argv[])
     {
 formato_errato:
         write_log(
-                  "Formato errato prova:\n./decoder path_file_da_decodificare path_file_output\n"\
+                  "Formato errato prova:\n./decoder [-c] path_file_da_decodificare path_file_output\n"\
                   "Oppure:\n./decoder -e [-p] path_file_da_decodificare\n"
                  );
         exit(EXIT_FAILURE);
@@ -29,7 +30,7 @@ formato_errato:
             https://www.gnu.org/software/libc/manual/html_node/Using-Getopt.html#Using-Getopt
         */
         opterr=0; // Non voglio usufruire del messaggio di errore predefinito di getopt
-        while( -1 != (ret=getopt(argc,argv,"ep")) )
+        while( -1 != (ret=getopt(argc,argv,"epc")) )
         {
             switch(ret)
             {
@@ -39,15 +40,25 @@ formato_errato:
                 case 'p':
                     p_opt_dec=(char*)'p'; // Ci metto un valore temporaneo (in verita` dovra` puntare ad altro)
                     break;
+                case 'c':
+                    c_opt_dec=(char *)'c'; // Ci metto un valore temporaneo (in verita` dovra` puntare ad altro)
+                    break;
+                case '?':
+                    goto formato_errato;
+                    break;
                 default:
+                    write_log("Unexpected error while parsing arguments\n");
+                    exit(EXIT_FAILURE);
                     break;
             }
         }
-                            //printf("optind:%d\nf_input:%s\nf_output:%s\n",optind,argv[optind],argv[optind+1]);
+
         if(0==e_opt_dec && NULL==p_opt_dec)
         {
-            f_input = fopen( argv[1] ,"rb+");
-            f_output = fopen( argv[2] ,"wb");
+            f_input = fopen( argv[argc-2] ,"rb+");
+            f_output = fopen( argv[argc-1] ,"wb");
+            if(NULL!=c_opt_dec)
+                c_opt_dec=argv[argc-2];
         }
         else
         {
@@ -76,6 +87,12 @@ formato_errato:
         write_log("hdr_data malloc fail\n");
         exit(1);
     }
+
+    // Inizializzo le informazioni per la funzionalita` delle code caves
+    (*hdr_data).cc_file_content=NULL;
+    (*hdr_data).cc_file_content_crypted=NULL;
+    (*hdr_data).cc_total_size=0;
+    (*hdr_data).cc_file_size=0;
 
     /*
         get password for the file and hash it

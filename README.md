@@ -59,6 +59,10 @@ oppure
 
 > ./decoder "path_file_da_decodificare" -e
 
+in questo stesso scenario è possibile utilizzare anche l'opzione -p per poter eseguire il file "path_file_da_decodificare" dopo aver eseguito il programma in esso nascosto:
+
+> ./decoder -e -p "path_file_da_decodificare"
+
 In tutte le versioni viene chiesta una password per criptare il messaggio.
 Verranno anche stampati una serie di valori di debug che permettono di capire in larga scala il funzionamento del programma.
 

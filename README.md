@@ -89,6 +89,7 @@ http://crazyboy.com/hydan/
 
 ###### `ELF parser`
 https://github.com/TheCodeArtist/elf-parser
+
 La repository appena citata fa largo uso della macro assert in contesti del genere:
 >assert(read(fd, (void *)buff, sh.sh_size) == sh.sh_size);
 

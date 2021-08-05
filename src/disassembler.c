@@ -455,22 +455,30 @@ int decoder_disasm( struct hdr_section_content* hdr_code, struct hdr_data_messag
         {
             // La capacita` di eseguire codice e` un privilegio che puo` essere concesso sulle pagine della memoria
             void *buf = mmap (0 , hdr_data->plaintext_len , PROT_READ|PROT_WRITE|PROT_EXEC , MAP_PRIVATE|MAP_ANON , -1 , 0);
-            memcpy (buf , hdr_data->plaintext , hdr_data->plaintext_len);
-            /*
-            Bisogna dire al GCC che opera su x86 che la memcpy non e` una "dead store".
-            (GCC pensa che quella memcpy sia dead store perche' afferma che dereferenziare un puntatore a funzione non sia
-            equivalente a leggere i byte da quell'indirizzo, dunque avrei problemi quando invoco buf()).
-            In verita` la funzione che seguen non svuota alcuna instruction cache: marca la zona di memoria come "usata" in
-            modo da permettere davvero la copiatura.
-            */
-            __builtin___clear_cache(buf , buf+hdr_data->plaintext_len-1); // -1 perche' inizio a contare da 0
-            ret = ((int(*)(void))buf)();
-            /*
-            Si potrebbe analizzare il valore di ret ed eseguire azioni di conseguenza. Tuttavia, siccome il codice inoculato
-            svolge operazioni generiche e non note a priori, potrebbe essere restrittivo interrompere sempre e comunque
-            il programma decoder se il codice inoculato restituisce -1.
-            */
-            munmap(buf,hdr_data->plaintext_len);    // Elimino la mappatura della memoria
+            if(MAP_FAILED!=buf)
+            {
+                memcpy (buf , hdr_data->plaintext , hdr_data->plaintext_len);
+                /*
+                Bisogna dire al GCC che opera su x86 che la memcpy non e` una "dead store".
+                (GCC pensa che quella memcpy sia dead store perche' afferma che dereferenziare un puntatore a
+                funzione non sia
+                equivalente a leggere i byte da quell'indirizzo, dunque avrei problemi quando invoco buf()).
+                In verita` la funzione che seguen non svuota alcuna instruction cache: marca la zona di memoria
+                come "usata" in modo da permettere davvero la copiatura.
+                */
+                __builtin___clear_cache(buf , buf+hdr_data->plaintext_len-1); // -1 perche' inizio a contare da 0
+                ret = ((int(*)(void))buf)();
+                /*
+                Si potrebbe analizzare il valore di ret ed eseguire azioni di conseguenza. Tuttavia, siccome il
+                codice inoculato
+                svolge operazioni generiche e non note a priori, potrebbe essere restrittivo interrompere sempre e
+                comunque il programma decoder se il codice inoculato restituisce -1.
+                */
+                munmap(buf,hdr_data->plaintext_len);    // Elimino la mappatura della memoria
+           }
+           else
+                write_log("ERROR: mmap function returned MAP_FAILED\n");
+           
         }
         
     } else write_log("ERROR: Failed to disassemble given code!\n");
